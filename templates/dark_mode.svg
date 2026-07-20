@@ -1,0 +1,36 @@
+<svg width="500" height="270" viewBox="0 0 500 270" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-labelledby="t d">
+  <title id="t">Tristan McKinnon's GitHub stats</title>
+  <desc id="d">Repos {{ repos }}, Commits {{ commits }}, Stars {{ stars }}, Followers {{ followers }}, Lines of code +{{ loc_add }} / -{{ loc_del }}</desc>
+  <style>
+    text{font-family:'SF Mono','Consolas','Menlo','DejaVu Sans Mono',monospace;}
+    .win{fill:#161b22;stroke:#30363d;}
+    .prompt{fill:#8b949e;font-size:12px;}
+    .name{fill:#e6edf3;font-size:15px;font-weight:bold;}
+    .rule{fill:#30363d;font-size:13px;}
+    .key{fill:#58a6ff;font-size:13px;}
+    .sep{fill:#8b949e;font-size:13px;}
+    .val{fill:#c9d1d9;font-size:13px;}
+    .add{fill:#3fb950;font-size:13px;}
+    .del{fill:#f85149;font-size:13px;}
+    .dim{fill:#8b949e;font-size:11px;}
+    .cur{fill:#58a6ff;font-size:12px;}
+  </style>
+  <rect class="win" x="1" y="1" width="498" height="268" rx="8"/>
+  <circle cx="20" cy="20" r="5" fill="#ff5f56"/>
+  <circle cx="38" cy="20" r="5" fill="#ffbd2e"/>
+  <circle cx="56" cy="20" r="5" fill="#27c93f"/>
+  <text class="prompt" x="250" y="24" text-anchor="middle">tr9800a@github:~$ neofetch</text>
+  <clipPath id="av"><rect x="30" y="56" width="120" height="120" rx="10"/></clipPath>
+  <image x="30" y="56" width="120" height="120" clip-path="url(#av)" xlink:href="{{ avatar }}" preserveAspectRatio="xMidYMid slice"/>
+  <text class="dim" x="90" y="196" text-anchor="middle">@tr9800a</text>
+  <text class="name" x="185" y="66">Tristan McKinnon</text>
+  <text class="rule" x="185" y="82">────────────────────────</text>
+  <text x="185" y="106"><tspan class="key">Repos</tspan><tspan class="sep">        : </tspan><tspan class="val">{{ repos }}</tspan></text>
+  <text x="185" y="128"><tspan class="key">Commits</tspan><tspan class="sep">      : </tspan><tspan class="val">{{ commits }}</tspan></text>
+  <text x="185" y="150"><tspan class="key">Stars</tspan><tspan class="sep">        : </tspan><tspan class="val">{{ stars }}</tspan></text>
+  <text x="185" y="172"><tspan class="key">Followers</tspan><tspan class="sep">    : </tspan><tspan class="val">{{ followers }}</tspan></text>
+  <text x="185" y="194"><tspan class="key">Lines of code</tspan><tspan class="sep">: </tspan><tspan class="add">+{{ loc_add }}</tspan><tspan class="sep"> / </tspan><tspan class="del">-{{ loc_del }}</tspan></text>
+  <text class="key" x="30" y="224" font-size="12">Languages</text>
+  <g transform="translate(30,230)">{{ lang_bar }}</g>
+  <g transform="translate(30,252)">{{ lang_legend }}</g>
+</svg>
