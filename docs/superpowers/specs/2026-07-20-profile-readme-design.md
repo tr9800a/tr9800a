@@ -15,8 +15,16 @@ GitHub Actions.
 
 ## Confirmed decisions
 
-- **Base engine:** `jstrieb/github-stats` (GPL-3.0). Our own SVG templates, look "inspired by"
-  Andrew6rant (not byte-identical). GPL-3.0 LICENSE + attribution to jstrieb included.
+- **Base engine:** `jstrieb/github-stats` (GPL-3.0), pinned to the **last Python-era commit
+  `0de78de1e603` (2022-02-17)** — upstream HEAD has since been rewritten in Zig and exposes
+  fewer fields (no followers, no added/removed LOC split), so we vendor the Python engine at that
+  commit. Our own SVG templates, look "inspired by" Andrew6rant (not byte-identical). GPL-3.0
+  LICENSE + attribution to jstrieb included.
+- **Followers** is not exposed by the vendored `Stats` class; our generator fetches it with a
+  small REST call to `GET /users/{username}` using the same token. The vendored `github_stats.py`
+  stays pristine (easier provenance/updates).
+- **Repo views** row is dropped (requires per-repo push/traffic access; brittle) — already out of scope.
+- **Commits row** uses `total_contributions` (GitHub contribution-calendar semantics), labelled "Commits".
 - **Display name / header:** terminal-prompt style — `tr9800a@github:~$` with the full name
   `Tristan McKinnon` shown as the card title.
 - **Uptime/age row:** dropped entirely (no birthdate exposed).
