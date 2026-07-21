@@ -31,6 +31,7 @@ jobs:
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_ACTOR: ${{ vars.USER_NAME }}
+          USER_NAME: ${{ vars.USER_NAME }}
         run: python generate_stats.py
 
       - name: Commit updated SVGs
@@ -39,4 +40,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add dark_mode.svg light_mode.svg
           git diff --staged --quiet || git commit -m "chore: refresh profile stats"
+          git pull --rebase --autostash origin main
           git push

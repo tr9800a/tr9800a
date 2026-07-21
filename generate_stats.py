@@ -34,8 +34,10 @@ async def avatar_data_uri(session: aiohttp.ClientSession, avatar_url: str) -> st
     return f"data:{ctype};base64,{b64}"
 
 
-def build_language_svg(languages: dict) -> tuple[str, str]:
-    """Return (lang_bar_svg, lang_legend_svg) as native SVG element strings."""
+def build_language_svg(languages: dict) -> tuple[str, str, int]:
+    """Return (lang_bar_svg, lang_legend_svg, legend_rows) — the SVG element
+    strings plus how many rows the legend wrapped onto, so the caller can size
+    the canvas to fit."""
     items = sorted(languages.items(), key=lambda kv: kv[1].get("prop", 0), reverse=True)
     items = items[:TOP_LANGS]
 
@@ -74,7 +76,7 @@ def build_language_svg(languages: dict) -> tuple[str, str]:
             f'{label}</text>'
         )
         x += item_w + gap
-    return "".join(bar), "".join(legend)
+    return "".join(bar), "".join(legend), (row + 1 if items else 0)
 
 
 def fill(template: str, values: dict) -> str:
@@ -97,10 +99,16 @@ async def main() -> None:
         meta = await fetch_user_meta(session, user, token)
         followers = int(meta.get("followers", 0))
         avatar = await avatar_data_uri(session, meta["avatar_url"])
-        lang_bar, lang_legend = build_language_svg(await s.languages)
+        lang_bar, lang_legend, legend_rows = build_language_svg(await s.languages)
+
+    # Grow the canvas so a legend that wrapped onto extra rows is never clipped.
+    # Legend group sits at y=252; each row is 18px; keep a bottom margin.
+    svg_h = max(286, 252 + max(0, legend_rows - 1) * 18 + 22)
 
     values = {
         "avatar": avatar,
+        "svg_h": svg_h,
+        "win_h": svg_h - 2,
         "repos": f"{repos:,}",
         "commits": f"{commits:,}",
         "stars": f"{stars:,}",
