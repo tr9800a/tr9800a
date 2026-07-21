@@ -50,21 +50,30 @@ def build_language_svg(languages: dict) -> tuple[str, str]:
         bar.append(f'<rect x="{x:.1f}" y="0" width="{w:.1f}" height="8" fill="{color}"/>')
         x += w
 
-    # Legend: colored dot + "Name pct%", laid out in up to 3 columns.
+    # Legend: colored dot + "Name pct%", flowing left-to-right and wrapping to
+    # a new row when the next item would overrun the bar width. Item widths are
+    # estimated from the monospace advance so long language names don't collide.
     legend = []
-    col_w = BAR_WIDTH / 3
-    for i, (lang, data) in enumerate(items):
-        col = i % 3
-        row = i // 3
-        gx = col * col_w
-        gy = row * 18
+    char_w = 6.6      # approx advance per char at font-size 11 (monospace)
+    dot_w = 14        # dot + gap before the label
+    gap = 20          # gap between items
+    x = 0.0
+    row = 0
+    for lang, data in items:
         color = data.get("color") or FALLBACK_COLOR
         pct = data.get("prop", 0)
+        label = f"{lang} {pct:.1f}%"
+        item_w = dot_w + len(label) * char_w
+        if x > 0 and x + item_w > BAR_WIDTH:
+            x = 0.0
+            row += 1
+        gy = row * 18
         legend.append(
-            f'<circle cx="{gx + 4:.1f}" cy="{gy + 4:.1f}" r="4" fill="{color}"/>'
-            f'<text x="{gx + 14:.1f}" y="{gy + 8:.1f}" font-size="11" fill="#8b949e">'
-            f'{lang} {pct:.1f}%</text>'
+            f'<circle cx="{x + 4:.1f}" cy="{gy + 4:.1f}" r="4" fill="{color}"/>'
+            f'<text x="{x + dot_w:.1f}" y="{gy + 8:.1f}" font-size="11" fill="#8b949e">'
+            f'{label}</text>'
         )
+        x += item_w + gap
     return "".join(bar), "".join(legend)
 
 
