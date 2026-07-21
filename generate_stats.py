@@ -18,21 +18,15 @@ BAR_WIDTH = 440          # px, width of the language bar
 TOP_LANGS = 6            # languages shown in bar + legend
 
 
-async def fetch_followers(session: aiohttp.ClientSession, user: str, token: str) -> int:
+async def fetch_user_meta(session: aiohttp.ClientSession, user: str, token: str) -> dict:
     headers = {"Authorization": f"token {token}"}
     async with session.get(f"https://api.github.com/users/{user}", headers=headers) as r:
         r.raise_for_status()
-        data = await r.json()
-        return int(data.get("followers", 0))
+        return await r.json()
 
 
-async def fetch_avatar_data_uri(session: aiohttp.ClientSession, user: str, token: str) -> str:
-    headers = {"Authorization": f"token {token}"}
-    async with session.get(f"https://api.github.com/users/{user}", headers=headers) as r:
-        r.raise_for_status()
-        meta = await r.json()
-    url = meta["avatar_url"]
-    async with session.get(url) as r:
+async def avatar_data_uri(session: aiohttp.ClientSession, avatar_url: str) -> str:
+    async with session.get(avatar_url) as r:
         r.raise_for_status()
         raw = await r.read()
         ctype = r.headers.get("Content-Type", "image/png").split(";")[0]
@@ -44,13 +38,14 @@ def build_language_svg(languages: dict) -> tuple[str, str]:
     """Return (lang_bar_svg, lang_legend_svg) as native SVG element strings."""
     items = sorted(languages.items(), key=lambda kv: kv[1].get("prop", 0), reverse=True)
     items = items[:TOP_LANGS]
-    total = sum(v.get("prop", 0) for _, v in items) or 1.0
 
-    # Bar: rounded container with colored segments.
+    # Bar: rounded container with colored segments sized by true proportion
+    # (share of the user's entire language footprint). Any remainder stays the
+    # background color, representing languages outside the shown few.
     bar = [f'<rect x="0" y="0" width="{BAR_WIDTH}" height="8" rx="4" fill="#30363d"/>']
     x = 0.0
     for _, data in items:
-        w = BAR_WIDTH * (data.get("prop", 0) / total)
+        w = BAR_WIDTH * (data.get("prop", 0) / 100.0)
         color = data.get("color") or FALLBACK_COLOR
         bar.append(f'<rect x="{x:.1f}" y="0" width="{w:.1f}" height="8" fill="{color}"/>')
         x += w
@@ -86,13 +81,13 @@ async def main() -> None:
 
     async with aiohttp.ClientSession() as session:
         s = Stats(user, token, session)
-        name = await s.name
         repos = len(await s.repos)
         commits = await s.total_contributions
         stars = await s.stargazers
         added, deleted = await s.lines_changed
-        followers = await fetch_followers(session, user, token)
-        avatar = await fetch_avatar_data_uri(session, user, token)
+        meta = await fetch_user_meta(session, user, token)
+        followers = int(meta.get("followers", 0))
+        avatar = await avatar_data_uri(session, meta["avatar_url"])
         lang_bar, lang_legend = build_language_svg(await s.languages)
 
     values = {
