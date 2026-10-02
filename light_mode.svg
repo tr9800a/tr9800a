@@ -1,6 +1,6 @@
 <svg width="500" height="292" viewBox="0 0 500 292" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-labelledby="t d">
   <title id="t">Tristan McKinnon's GitHub stats</title>
-  <desc id="d">Repos 72, Commits 797, Stars 21, Followers 3, Lines of code +6,114,562 / -397,691</desc>
+  <desc id="d">Repos 72, Commits 797, Stars 22, Followers 3, Lines of code +6,114,562 / -397,691</desc>
   <style>
     text{font-family:'SF Mono','Consolas','Menlo','DejaVu Sans Mono',monospace;}
     .win{fill:#ffffff;stroke:#d0d7de;}
@@ -27,7 +27,7 @@
   <text class="rule" x="185" y="82">────────────────────────</text>
   <text class="key" x="185" y="106">Repos</text><text class="val" x="312" y="106">72</text>
   <text class="key" x="185" y="128">Commits</text><text class="val" x="312" y="128">797</text>
-  <text class="key" x="185" y="150">Stars</text><text class="val" x="312" y="150">21</text>
+  <text class="key" x="185" y="150">Stars</text><text class="val" x="312" y="150">22</text>
   <text class="key" x="185" y="172">Followers</text><text class="val" x="312" y="172">3</text>
   <text class="key" x="185" y="194">Lines of code</text><text x="312" y="194"><tspan class="add">+6,114,562</tspan><tspan class="sep"> / </tspan><tspan class="del">-397,691</tspan></text>
   <text class="key" x="30" y="224" font-size="12">Languages</text>
